@@ -52,7 +52,7 @@ public class BTreeMain {
                             String level = s2.next();
                             int age = Integer.parseInt(s2.next());
                             /** TODO: Write a logic to generate recordID*/
-                            long recordID = 0 ;
+                            long recordID = ;
 
                             Student s = new Student(studentId, age, studentName, major, level, recordID);
                             bTree.insert(s);
