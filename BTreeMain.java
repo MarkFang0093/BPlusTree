@@ -3,6 +3,7 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.Random;
 
 /**
  * Main Application.
@@ -53,7 +54,9 @@ public class BTreeMain {
                             int age = Integer.parseInt(s2.next());
                             /** TODO: Write a logic to generate recordID*/
                             // should be a random number generation
-                            long recordID = ;
+                            long UPPER_RANGE = 100000; //upper bound for randomly generated record IDs
+                            Random random = new Random();
+                            long recordID = 0 + (long)(random.nextDouble()*(UPPER_RANGE - 0));
 
                             Student s = new Student(studentId, age, studentName, major, level, recordID);
                             bTree.insert(s);
