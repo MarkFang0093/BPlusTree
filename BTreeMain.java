@@ -17,10 +17,12 @@ public class BTreeMain {
 
     public static void main(String[] args) {
 
+        System.out.print("Hello"); 
+
         /** Read the input file -- input.txt */
         Scanner scan = null;
         try {
-            scan = new Scanner(new File("src/input.txt"));
+            scan = new Scanner(new File("input.txt"));
         } catch (FileNotFoundException e) {
             System.out.println("File not found.");
         }
@@ -55,7 +57,7 @@ public class BTreeMain {
                             String major = s2.next();
                             String level = s2.next();
                             int age = Integer.parseInt(s2.next());
-                            /** TODO: Write a logic to generate recordID */
+                            /**  Write a logic to generate recordID */
                             // should be a random number generation
                             long UPPER_RANGE = 1000; // upper bound for randomly generated record IDs
                             long LOWER_RANGE = 24;
@@ -111,11 +113,10 @@ public class BTreeMain {
 
         List<Student> studentList = new ArrayList<>();
 
-        String csvFile = "src/Students.csv";
+        String csvFile = "Student.csv";
         BufferedReader br = null;
         String line = "";
         String csvSplitBy = ",";
-
 
         try {
 
@@ -124,8 +125,7 @@ public class BTreeMain {
 
                 // use comma as separator
                 String[] studentinfo = line.split(csvSplitBy);
-                //System.out.println("Country [code= " + country[4] + " , name=" + country[5] + "]");
-                long sid =  Long.valueOf(studentinfo[0]).longValue();
+                long sid =  Long.valueOf(studentinfo[0] ).longValue();
                 String sname= studentinfo[1]; 
                 String smajor = studentinfo[2];
                 String slevel = studentinfo[3]; 
@@ -134,7 +134,6 @@ public class BTreeMain {
 
                 Student newStudent = new Student(sid, sage, sname, smajor, slevel, srecordid); 
                 studentList.add(newStudent); 
-
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
