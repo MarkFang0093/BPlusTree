@@ -55,8 +55,9 @@ public class BTreeMain {
                             /** TODO: Write a logic to generate recordID*/
                             // should be a random number generation
                             long UPPER_RANGE = 1000; //upper bound for randomly generated record IDs
+                            long LOWER_RANGE = 24; 
                             Random random = new Random();
-                            long recordID = 0 + (long)(random.nextDouble()*(UPPER_RANGE - 0));
+                            long recordID = LOWER_RANGE + s(random.nextLong()*(UPPER_RANGE - LOWER_RANGE));
 
                             Student s = new Student(studentId, age, studentName, major, level, recordID);
                             bTree.insert(s);
