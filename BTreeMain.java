@@ -54,7 +54,7 @@ public class BTreeMain {
                             int age = Integer.parseInt(s2.next());
                             /** TODO: Write a logic to generate recordID*/
                             // should be a random number generation
-                            long UPPER_RANGE = 100000; //upper bound for randomly generated record IDs
+                            long UPPER_RANGE = 1000; //upper bound for randomly generated record IDs
                             Random random = new Random();
                             long recordID = 0 + (long)(random.nextDouble()*(UPPER_RANGE - 0));
 
