@@ -1,5 +1,8 @@
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -28,14 +31,14 @@ public class BTreeMain {
 
         BTree bTree = new BTree(degree);
 
-        /** Reading the database student.csv into B+Tree Node*/
+        /** Reading the database student.csv into B+Tree Node */
         List<Student> studentsDB = getStudents();
 
         for (Student s : studentsDB) {
             bTree.insert(s);
         }
 
-        /** Start reading the operations now from input file*/
+        /** Start reading the operations now from input file */
         try {
             while (scan.hasNextLine()) {
                 Scanner s2 = new Scanner(scan.nextLine());
@@ -52,12 +55,12 @@ public class BTreeMain {
                             String major = s2.next();
                             String level = s2.next();
                             int age = Integer.parseInt(s2.next());
-                            /** TODO: Write a logic to generate recordID*/
+                            /** TODO: Write a logic to generate recordID */
                             // should be a random number generation
-                            long UPPER_RANGE = 1000; //upper bound for randomly generated record IDs
-                            long LOWER_RANGE = 24; 
+                            long UPPER_RANGE = 1000; // upper bound for randomly generated record IDs
+                            long LOWER_RANGE = 24;
                             Random random = new Random();
-                            long recordID = LOWER_RANGE + s(random.nextLong()*(UPPER_RANGE - LOWER_RANGE));
+                            long recordID = LOWER_RANGE + (random.nextLong() * (UPPER_RANGE - LOWER_RANGE));
 
                             Student s = new Student(studentId, age, studentName, major, level, recordID);
                             bTree.insert(s);
@@ -99,14 +102,48 @@ public class BTreeMain {
         }
     }
 
-    private static List<Student> getStudents() {
+    private static List<Student> getStudents(){
 
-        /** TODO:
+        /** 
          * Extract the students information from "Students.csv"
          * return the list<Students>
          */
 
         List<Student> studentList = new ArrayList<>();
+
+        String csvFile = "src/Students.csv";
+        BufferedReader br = null;
+        String line = "";
+        String csvSplitBy = ",";
+
+
+        try {
+
+            br = new BufferedReader(new FileReader(csvFile));
+            while ((line = br.readLine()) != null) {
+
+                // use comma as separator
+                String[] studentinfo = line.split(csvSplitBy);
+                //System.out.println("Country [code= " + country[4] + " , name=" + country[5] + "]");
+                long sid =  Long.valueOf(studentinfo[0]).longValue();
+                String sname= studentinfo[1]; 
+                String smajor = studentinfo[2];
+                String slevel = studentinfo[3]; 
+                int sage= Integer.parseInt(studentinfo[4]); 
+                long srecordid = Long.valueOf(studentinfo[5]).longValue();
+
+                Student newStudent = new Student(sid, sage, sname, smajor, slevel, srecordid); 
+                studentList.add(newStudent); 
+
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return studentList;
+
     }
 }
