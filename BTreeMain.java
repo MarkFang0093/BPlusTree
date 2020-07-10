@@ -17,8 +17,6 @@ public class BTreeMain {
 
     public static void main(String[] args) {
 
-        System.out.print("Hello"); 
-
         /** Read the input file -- input.txt */
         Scanner scan = null;
         try {
