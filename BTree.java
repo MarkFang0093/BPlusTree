@@ -81,10 +81,16 @@ class BTree {
             ","+ student.level+","+ student.age+","+ student.recordId);
 
     }
+    public List<BTreeNode> getChildren(BTreeNode node ) {
+		return node.children;
+    }
+    
+    public List<Long> getKeys(BTreeNode node) {
+		return node.keys;
+    }
 
     BTree insert(Student student) { 
         /**
-         * TODO:
          * Implement this function to insert in the B+Tree.
          * Also, insert in student.csv after inserting in B+Tree.
          */
@@ -92,45 +98,56 @@ class BTree {
         BTreeNode node = new BTreeNode(root.t, true);
         BTreeNode curr = new BTreeNode(root.t, true);
         BTreeNode prev = new BTreeNode(root.t, true);
-
         int maxDegree = 2*(node.t); //max number of keys for a node
         int maxChildren = 2*(node.t)+1; //max number of children allowed for node
         
-        if(root == null){ //empty tree, this is the root now. 
-            root.keys.add(0, student.studentId); 
-            //write to Student.csv
-            writeToCsv(student); 
-        }
-        //previous node set to leaf= false
-        //set recordID for new leaf nodes, remove from internal nodes
-        else{//go to leaf and insert. split if needed. grows upwards
-            //choose the subtree, find i s.t. Ki <= entry's key value < J(i+1)
-
-            //If the bucket is not full (at most b 1 entries after the insertion), add the record.
-            if(node.next == null && node.keys.size() < maxDegree ) //there is space in the bucket
-
-            if(node.keys.size() >= maxDegree){
-                split(); //splitting stuff
-            }
-            else{ 
-                prev = node;
-                curr = node.next; 
-                node = node.next.next;
-                if(prev<curr && curr<node ){
-                    
-                }
-            }
-        }
-
-
         
-         
-         
-         
+        // Case 1: Inserting to an Empty B Plus Tree
+        if(this.root == null){  //empty tree, this is the root now. 
+            root.keys.add(0, student.studentId); 
+            writeToCsv(student); //write to Student.csv
+        }
+       
+        // Case 2: Only one node that is not full
+        else if(getChildren(root).isEmpty() && getKeys(root).size() < maxDegree) {//go to leaf and insert. split if needed. grows upwards
+            // For all insertions until the root gets overfull for the first
+            // time, we just update the root node, adding the new keys:
+                insertWithinExternalNode(key, value, this.root);
+        }
 
+        // Case 3: Normal insert
+        else{
+            
+        }
+
+          
+        // //Case 3:normal insert
+        //     while(getChildren(root) == null){
+                
+        //     }
+        //     node = node;
+        //     //choose the subtree, find i s.t. Ki <= entry's key value < J(i+1)
+
+        //     //If the bucket is not full (at most b 1 entries after the insertion), add the record.
+        //     if(node.next == null && node.keys.size() < maxDegree ) //there is space in the bucket
+
+        //     if(node.keys.size() >= maxDegree){
+        //         split(); //splitting stuff
+        //     }
+        //     else{ 
+        //         prev = node;
+        //         curr = node.next; 
+        //         node = node.next.next;
+        //         if(prev<curr && curr<node ){
+                    
+        //         }
+        //     }            
 
         return this;
     }
+
+    
+    
 
     /**
      * helper method for insert
