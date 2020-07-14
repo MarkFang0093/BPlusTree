@@ -15,7 +15,7 @@ import java.util.Random;
  */
 public class BTreeMain {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
 
         /** Read the input file -- input.txt */
         Scanner scan = null;
@@ -55,14 +55,16 @@ public class BTreeMain {
                             String major = s2.next();
                             String level = s2.next();
                             int age = Integer.parseInt(s2.next());
-                            /**  Write a logic to generate recordID */
+                            /**  TODO: record id static var increment*/
                             // should be a random number generation
-                            long UPPER_RANGE = 1000; // upper bound for randomly generated record IDs
-                            long LOWER_RANGE = 24;
-                            Random random = new Random();
-                            long recordID = LOWER_RANGE + (random.nextLong() * (UPPER_RANGE - LOWER_RANGE));
-
+                            // long UPPER_RANGE = 1000; // upper bound for randomly generated record IDs
+                            // long LOWER_RANGE = 24;
+                            // Random random = new Random();
+                            // long recordID = LOWER_RANGE + (random.nextLong() * (UPPER_RANGE - LOWER_RANGE));
+                            long recordID = Long.parseLong(s2.next());
                             Student s = new Student(studentId, age, studentName, major, level, recordID);
+                      
+                            
                             bTree.insert(s);
 
                             break;
@@ -88,12 +90,13 @@ public class BTreeMain {
                         }
                         case "print": {
                             List<Long> listOfRecordID = new ArrayList<>();
-                            listOfRecordID = bTree.pri nt();
+                            listOfRecordID = bTree.print();
                             System.out.println("List of recordIDs in B+Tree " + listOfRecordID.toString());
                         }
-                        default:
+                        default:{
                             System.out.println("Wrong Operation");
                             break;
+                        }
                     }
                 }
             }

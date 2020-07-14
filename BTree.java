@@ -6,14 +6,15 @@
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.io.BufferedWriter;
 
 /**
- * B+Tree Structure
- * Key - StudentId
- * Leaf Node should contain [ key,recordId ]
+ * B+Tree Structure Key - StudentId Leaf Node should contain [ key,recordId ]
  */
 class BTree {
 
@@ -33,85 +34,78 @@ class BTree {
 
     long search(long studentId) {
         /**
-         * TODO:
-         * Implement this function to search in the B+Tree.
-         * Return recordID for the given StudentID.
-         * Otherwise, print out a message that the given studentId has not been found in the table and return -1.
+         * TODO: Implement this function to search in the B+Tree. Return recordID for
+         * the given StudentID. Otherwise, print out a message that the given studentId
+         * has not been found in the table and return -1.
          */
 
-            return tree_search(root, studentId);
+        return tree_search(root, studentId);
     }
 
     /**
      * helper method recursion
      */
-    long tree_search(BTreeNode root, long studentId){
-        if(root == null){
+    long tree_search(BTreeNode root, long studentId) {
+        if (root == null) {
             return root.keys.get(0);
         }
-        if(root.leaf) //if *nodepointer is a leaf
-            return root.values.get(0); //return recordID of this leaf 
-        else{  // ELSE this is not a leaf node. don't use values[].
-            
-            if(studentId < root.keys.get(0)){ //go to left hand tree, compare with left-most key value
-                return tree_search(root.children.get(0), studentId);              
-            }
-            else{ 
-                int lengthOfRoot = root.keys.size(); 
-                if(studentId >= root.keys.get(lengthOfRoot - 1)){  //go to right hand tree compare with right-most key value
+        if (root.leaf) // if *nodepointer is a leaf
+            return root.values.get(0); // return recordID of this leaf
+        else { // ELSE this is not a leaf node. don't use values[].
+
+            if (studentId < root.keys.get(0)) { // go to left hand tree, compare with left-most key value
+                return tree_search(root.children.get(0), studentId);
+            } else {
+                int lengthOfRoot = root.keys.size();
+                if (studentId >= root.keys.get(lengthOfRoot - 1)) { // go to right hand tree compare with right-most key
+                                                                    // value
                     return tree_search(root.children.get(1), studentId);
-                }
-                else{           // leaf node traversal of intermediate values of root
-                    //find i such that Ki < K < Ki+1:
-                    int i = 1; 
-                    while(root.keys.get(i) <= studentId){
-                        i++; 
+                } else { // leaf node traversal of intermediate values of root
+                    // find i such that Ki < K < Ki+1:
+                    int i = 1;
+                    while (root.keys.get(i) <= studentId) {
+                        i++;
                     }
                     return tree_search(root.children.get(i), studentId);
                 }
-            }           
-        }      
+            }
+        }
     }
 
+    // helper method to write a new student's info to the Student.vsb
+    void writeToCsv(Student student) throws IOException {
 
-    //helper method to write a new student's info to the Student.vsb
-    Student writeToCsv(Student student){
+        
+            try{
+                FileWriter csvWriter = new FileWriter("Student.csv");
+                csvWriter.append(student.studentId + "," + student.studentName + "," + student.major+
+                    ","+ student.level+","+ student.age+","+ student.recordId);
+        
+                /*^^^^^^^*/
+            }
+            catch(IOException ex){
+                System.out.println("FILE EXCEPTION");
+            }
+    }   
 
-        BufferedReader csvWriter = new BufferedReader(new FileReader("Student.csv"));
-        //TODO: fix this below 
-        csvWriter.append(student.studentId, "," + student.studentName + "," + student.major+
-            ","+ student.level+","+ student.age+","+ student.recordId);
-
-    }
-    public ArrayList<BTreeNode> getChildren(BTreeNode node ) {
-		return node.children;
-    }
-    
-    public ArrayList<Long> getKeys(BTreeNode node) {
-		return node.keys;
-    }
-
-    BTree insert(Student student) { 
+    BTree insert(Student student) throws IOException { 
         /**
          * Implement this function to insert in the B+Tree.
          * Also, insert in student.csv after inserting in B+Tree.
          */
         
-        BTreeNode node = new BTreeNode(root.t, true);
-        BTreeNode curr = new BTreeNode(root.t, true);
-        BTreeNode prev = new BTreeNode(root.t, true);
+        BTreeNode curr = new BTreeNode(t, true);
         int maxDegree = 2*t; //max number of keys for a node
-        int maxChildren = (2*t)+1; //max number of children allowed for node
-        
+        //int maxChildren = (2*t)+1; //max number of children allowed for node
         
         // Case 1: Inserting to an Empty B Plus Tree
-        if(this.root == null){  //empty tree, this is the root now. 
-            root.keys.add(0, student.studentId); 
-            writeToCsv(student); //write to Student.csv
+        if(root == null){  //empty tree, this is the root now. 
+            root = new BTreeNode(t, false); 
+            root.keys.add(student.studentId); 
         }
        
         // Case 2: Only one node that is not full
-        else if(getChildren(root).isEmpty() && getKeys(root).size() < maxDegree) {//go to leaf and insert. split if needed. grows upwards
+        else if(root.children.isEmpty() && root.keys.size() < maxDegree) {//go to leaf and insert. split if needed. grows upwards
             // For all insertions until the root gets overfull for the first
             // time, we just update the root node, adding the new keys:
                 insertLeafNode(student, this.root);
@@ -120,16 +114,17 @@ class BTree {
         // Case 3: Normal insert
         else{
             // traverse to the last level 
-            while (!getChildren(curr).isEmpty()) {
-				curr = getChildren(curr).get(searchInternalNode(student, curr);
+            while (!(curr.children.isEmpty())) {
+				curr = curr.children.get(searchInternalNode(student, curr));
             }
             insertLeafNode(student, curr);
-			if (getKeys(curr).size() == maxDegree) {
+			if (curr.keys.size() == maxDegree) {
 				// If the external node becomes full, we split it
                 splitLeafNodes(curr, maxDegree);
             }
         }
 
+        writeToCsv(student); //write to Student.csv
         return this;
     }
 
@@ -140,8 +135,9 @@ class BTree {
         int index;
          
         index = searchInternalNode(student, node); 
-        if(index < node.keys.size()) { //TODO: check this condition
+        if(index < node.keys.size()) { 
             node.keys.set(index, student.studentId);
+            node.leaf = true; 
         }
     }
 
@@ -228,7 +224,7 @@ class BTree {
          * Return true if the student is deleted successfully otherwise, return false.
          */
         return true;
-    }
+    }    
 
     List<Long> print() {
 
@@ -240,16 +236,20 @@ class BTree {
          *
          */
         if(root == null){
-            return null; 
+            return listOfRecordID; 
         }
-        while(root.children != null ){ //as long as this node has children
-            root = root.children[0]; //point down to its far left child
+
+        // traverse to the last level 
+        while (!(root.children.isEmpty())) {
+            root = root.children.get(0);
         }
-        listOfRecordID.add(root.values[0]); //add the left most leaf to arraylist
-        
-        while(root.next != null){
-            root = root.next; //inc. ptr to next leaf
-            listOfRecordID.add(root.values[0]); //add this key value of the leaf to the arraylist 
+        if(root.leaf){
+            while(root.next != null){
+                for(int i = 0; i<root.values.size(); i++){
+                    listOfRecordID.add(root.values.get(i)); //add this key value of the leaf to the arraylist 
+                }
+                root = root.next; //inc. ptr to next leaf
+            }
         }
         return listOfRecordID;
     } 
