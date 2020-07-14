@@ -72,6 +72,8 @@ class BTree {
             }           
         }      
     }
+
+
     //helper method to write a new student's info to the Student.vsb
     Student writeToCsv(Student student){
 
@@ -81,11 +83,11 @@ class BTree {
             ","+ student.level+","+ student.age+","+ student.recordId);
 
     }
-    public List<BTreeNode> getChildren(BTreeNode node ) {
+    public ArrayList<BTreeNode> getChildren(BTreeNode node ) {
 		return node.children;
     }
     
-    public List<Long> getKeys(BTreeNode node) {
+    public ArrayList<Long> getKeys(BTreeNode node) {
 		return node.keys;
     }
 
@@ -98,8 +100,8 @@ class BTree {
         BTreeNode node = new BTreeNode(root.t, true);
         BTreeNode curr = new BTreeNode(root.t, true);
         BTreeNode prev = new BTreeNode(root.t, true);
-        int maxDegree = 2*(node.t); //max number of keys for a node
-        int maxChildren = 2*(node.t)+1; //max number of children allowed for node
+        int maxDegree = 2*t; //max number of keys for a node
+        int maxChildren = (2*t)+1; //max number of children allowed for node
         
         
         // Case 1: Inserting to an Empty B Plus Tree
@@ -112,12 +114,20 @@ class BTree {
         else if(getChildren(root).isEmpty() && getKeys(root).size() < maxDegree) {//go to leaf and insert. split if needed. grows upwards
             // For all insertions until the root gets overfull for the first
             // time, we just update the root node, adding the new keys:
-                insertWithinExternalNode(key, value, this.root);
+                insertWithinExternalNode(student, this.root);
         }
 
         // Case 3: Normal insert
         else{
-            
+            // traverse to the last level 
+            while (!getChildren(curr).isEmpty()) {
+				curr = getChildren(curr).get(seaInternalNode(keys, getKeys(curr)));
+            }
+            insertWithinExternalNode(key, value, curr);
+			if (getKeys(curr).size() == maxDegree) {
+				// If the external node becomes full, we split it
+                splitExternalNode(curr, maxDegree);
+            }
         }
 
           
@@ -146,7 +156,33 @@ class BTree {
         return this;
     }
 
+    /**
+     * helper method to insert the key
+     */
+    void insertWithinExternalNode(Student student, BTreeNode node){
+       int index  = 0; 
+        index = searchInternalNode(student, node);
+        
+    }
     
+    /**
+     *  look throughout the nodes for  a specific value 
+     * @param student
+     * @return int the first index of the list at which the key which is greater
+	 *         than the input key
+     */
+    int searchInternalNode(Student student, BTreeNode node)
+    {
+        long key = student.recordId; //the key to be searched
+        ArrayList<Long> keyList = getKeys(node); //the list of keys to be searched
+
+        int start = 0; 
+        int middle = 
+
+
+
+        return 0; 
+    }
     
 
     /**
