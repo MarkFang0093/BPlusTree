@@ -114,44 +114,21 @@ class BTree {
         else if(getChildren(root).isEmpty() && getKeys(root).size() < maxDegree) {//go to leaf and insert. split if needed. grows upwards
             // For all insertions until the root gets overfull for the first
             // time, we just update the root node, adding the new keys:
-                insertWithinExternalNode(student, this.root);
+                insertLeafNode(student, this.root);
         }
 
         // Case 3: Normal insert
         else{
             // traverse to the last level 
             while (!getChildren(curr).isEmpty()) {
-				curr = getChildren(curr).get(seaInternalNode(keys, getKeys(curr)));
+				curr = getChildren(curr).get(searchInternalNode(student, curr);
             }
-            insertWithinExternalNode(key, value, curr);
+            insertLeafNode(student, curr);
 			if (getKeys(curr).size() == maxDegree) {
 				// If the external node becomes full, we split it
-                splitExternalNode(curr, maxDegree);
+                splitLeafNodes(curr, maxDegree);
             }
         }
-
-          
-        // //Case 3:normal insert
-        //     while(getChildren(root) == null){
-                
-        //     }
-        //     node = node;
-        //     //choose the subtree, find i s.t. Ki <= entry's key value < J(i+1)
-
-        //     //If the bucket is not full (at most b 1 entries after the insertion), add the record.
-        //     if(node.next == null && node.keys.size() < maxDegree ) //there is space in the bucket
-
-        //     if(node.keys.size() >= maxDegree){
-        //         split(); //splitting stuff
-        //     }
-        //     else{ 
-        //         prev = node;
-        //         curr = node.next; 
-        //         node = node.next.next;
-        //         if(prev<curr && curr<node ){
-                    
-        //         }
-        //     }            
 
         return this;
     }
@@ -159,9 +136,46 @@ class BTree {
     /**
      * helper method to insert the key
      */
-    void insertWithinExternalNode(Student student, BTreeNode node){
-       int index  = 0; 
-        index = searchInternalNode(student, node);
+    void insertLeafNode(Student student, BTreeNode node){
+        int index;
+         
+        index = searchInternalNode(student, node); 
+        if(index < node.keys.size()) { //TODO: check this condition
+            node.keys.set(index, student.studentId);
+        }
+    }
+
+    /**
+     * split the leaf nodes if maxKeys(int t) is reached
+     * | 1 | 2 | 3 | 5 | with insert 4 becomes :
+     * 
+     *              | 3 | | (internal) 
+     * | 1 | 2 | - | - | and | 3 | 4 | 5 | - | (leaf) 
+     * @param node
+     * @param m
+     */
+    void splitLeafNodes(BTreeNode node, int m){
+        // Find the middle index
+        int middleIndex = m / 2;
+        BTreeNode middle = new BTreeNode(t, false);
+        BTreeNode rightPart = new BTreeNode(t, true);
+        BTreeNode leftPart = new BTreeNode(t, true);
+
+        // Set the right part to have middle element and the elements right to the middle element
+        for(int i = middleIndex; i <node.keys.size() ; i++){
+            for(int j = 0; j < 2*t ; j++){
+                rightPart.keys.set(j, node.keys.get(i));
+            } 
+        }
+        middle.children.add(rightPart);
+
+        // Set the left part to have middle element and the elements left to the middle element
+        for(int i = 0; i <middleIndex ; i++){
+            for(int j = 0; j < 2*t ; j++){
+                leftPart.keys.set(j, node.keys.get(i));
+            } 
+        }
+        middle.children.add(rightPart);
         
     }
     
@@ -174,24 +188,37 @@ class BTree {
     int searchInternalNode(Student student, BTreeNode node)
     {
         long key = student.recordId; //the key to be searched
-        ArrayList<Long> keyList = getKeys(node); //the list of keys to be searched
-
         int start = 0; 
-        int middle = 
-
-
-
-        return 0; 
+        int end = node.keys.size()- 1;
+        int middle; 
+        int index = -1;
+        
+        // Return first index if key is less than the first element
+        if(key < node.keys.get(start)) {
+            return 0; 
+        }
+        // Return array size + 1 as the new position of the key if greater than the last element
+        if(key >= node.keys.get(end)) {
+			return node.keys.size();
+        }
+        //otherwise it belongs in the middle of the node 
+        while(start <= end){
+            middle = (start+end)/2; 
+            if(key<node.keys.get(middle) && key>= node.keys.get(middle-1) ){
+                index = middle;
+                break;
+            }
+            else if(key>=node.keys.get(middle)){
+                start = middle + 1;
+            }
+            else {
+				end = middle - 1;
+			}
+        }
+        
+        return index; 
     }
-    
 
-    /**
-     * helper method for insert
-     * Split the node if the parent is full 
-     */
-    void split(){
-
-    }
 
     boolean delete(long studentId) {
         /**
